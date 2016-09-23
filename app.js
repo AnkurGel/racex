@@ -22,12 +22,12 @@ var App = function() {
       var currentChar = explodeUserInput[currentIdx];
       
       if(splitPara[(lastIdxPosSuccess + currentIdx)] == ' ') {
-        lastIdxPosSuccess = (lastIdxPosSuccess + currentIdx);
+        lastIdxPosSuccess = (lastIdxPosSuccess + currentIdx + 1);
         console.log(lastIdxPosSuccess);
         $(this).val('');
       }
       
-      if(currentChar == splitPara[currentIdx]) {
+      if(currentChar == splitPara[(currentIdx + lastIdxPosSuccess)]) {
         userInputElmWrapper.removeClass('dm').addClass('m');
       } else {
         userInputElmWrapper.removeClass('m').addClass('dm');
