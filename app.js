@@ -1,5 +1,6 @@
 var App = function() {
   function init() {
+    App.stepFunction = 'word';
     typeEngine();
     Typer.init();
   }
@@ -50,6 +51,9 @@ var App = function() {
       
       if(currentChar == splitPara[(currentIdx + lastIdxPosSuccess)]) {
         userInputElmWrapper.removeClass('dm').addClass('m');
+        if(App.stepFunction == 'char'){
+          
+        }
       } else {
         errCounter++;
         userInputElmWrapper.removeClass('m').addClass('dm');
@@ -57,8 +61,12 @@ var App = function() {
     });
   }
   
+  function updateSpeed(data){
+    $('.speed[data-user-id="'+data['id']+'"]').text(data['speed'] + ' WPM');
+  }
   return {
-    init: init
+    init: init,
+    updateSpeed: updateSpeed
   }
 }();
 

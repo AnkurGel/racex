@@ -55,6 +55,15 @@ body {
   position: relative;
 }
 
+.speed {
+  position: absolute;
+  right: 0;
+  height: 20px;
+  width: 100px;
+  border: 1px solid red;
+  top: 0;
+}
+
 .car[data-user-id="1"],
 .car[data-user-id="2"],
 .car[data-user-id="3"],
