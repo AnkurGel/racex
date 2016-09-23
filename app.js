@@ -5,6 +5,7 @@ var App = function() {
   
   //Privates
   function typeEngine() {
+    var err;
     var lastIdxPosSuccess = 0; //special var to hold index after clearing input
     var userInputElmWrapper = $('#user-input');
     var userInputElm = userInputElmWrapper.find('input');
@@ -22,8 +23,10 @@ var App = function() {
       var currentChar = explodeUserInput[currentIdx];
       
       if(splitPara[(lastIdxPosSuccess + currentIdx)] == ' ') {
+        if($(this).parent().hasClass('dm')) {
+          return;
+        }
         lastIdxPosSuccess = (lastIdxPosSuccess + currentIdx + 1);
-        console.log(lastIdxPosSuccess);
         $(this).val('');
       }
       
