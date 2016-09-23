@@ -1,6 +1,7 @@
 var App = function() {
   function init() {
     typeEngine();
+    Typer.init();
     createRoom();
   }
   
@@ -38,12 +39,11 @@ var App = function() {
         // console.log($(this).val().length);
         // console.log($(this).val());
         var data = {
-          errCount: errCounter,
-          word: $(this).val(),
-          wordLength: $(this).val()
+          errors: errCounter,
+          length: $(this).val().length
         }
         
-        
+        Typer.sendKey(data);
         lastIdxPosSuccess = (lastIdxPosSuccess + currentIdx + 1);
         errCounter = 0; //reset errors
         $(this).val('');
