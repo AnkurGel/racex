@@ -1,3 +1,5 @@
+@import 'https://fonts.googleapis.com/css?family=Lobster';
+
 * {
   margin: 0;
   padding: 0;
@@ -7,4 +9,74 @@
 
 html, body, .wrapper {
   height: 100%;
+  color: #515151;
+}
+
+body {
+  padding: 20px;
+}
+
+.wrapper {
+  padding: 20px;
+  border: 1px solid #eee;
+  width: 1200px;
+  margin: auto;
+}
+
+.logo {
+  font-family: Lobster;
+  font-size: 40px;
+  text-align: center;
+}
+
+.logo span {
+  color: #3498db;
+}
+
+
+/*
+  Car Panel
+ */
+
+.race-window {
+  width: 95%;
+  margin: 40px auto;
+  border: 1px solid #eee;
+  padding-bottom: 40px;
+}
+
+.track {
+  width: 1100px;
+  margin: auto;
+  height: 60px;
+  border-bottom: 1px dashed #ddd;
+  position: relative;
+}
+
+.car[data-user-id="1"],
+.car[data-user-id="2"],
+.car[data-user-id="3"],
+.car[data-user-id="4"] {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  background-size: 100% auto;
+  bottom: -10px;
+  background-repeat: no-repeat;
+}
+
+.car[data-user-id="1"] {
+  background-image: url(car.svg);
+}
+
+.car[data-user-id="2"] {
+  background-image: url(car2.svg);
+}
+
+.car[data-user-id="3"] {
+  background-image: url(car3.svg);
+}
+
+.car[data-user-id="4"] {
+  background-image: url(car4.svg);
 }
