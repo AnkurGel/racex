@@ -29,9 +29,13 @@ var App = function() {
           return;
         }
         
-        console.log(errCounter);
-        console.log($(this).val().length);
-        console.log($(this).val());
+        var completedText = getPara.substring(0, (lastIdxPosSuccess + currentIdx));
+        var incompleteText = getPara.substring((lastIdxPosSuccess + currentIdx), $('#sample-text').text().trim().length);
+        
+        $('#sample-text').html('<span>' + completedText + '</span>' + incompleteText);
+        // console.log(errCounter);
+        // console.log($(this).val().length);
+        // console.log($(this).val());
         var data = {
           errCount: errCounter,
           word: $(this).val(),
