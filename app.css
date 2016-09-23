@@ -1,5 +1,5 @@
 @import 'https://fonts.googleapis.com/css?family=Lobster';
-@import 'https://fonts.googleapis.com/css?family=Open+Sans';
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600';
 
 * {
   margin: 0;
@@ -18,11 +18,16 @@ body {
   padding: 20px;
 }
 
+.hide {
+  display: none;
+}
+
 .wrapper {
   padding: 20px;
   border: 1px solid #eee;
   width: 1200px;
   margin: auto;
+  position: relative;
 }
 
 .logo {
@@ -35,6 +40,24 @@ body {
   color: #3498db;
 }
 
+.action-controls {
+  position: absolute;
+  right: 50px;
+  top: 40px;
+}
+
+.action-controls .create-room {
+  user-appearance: none;
+  padding: 10px;
+  font-family: inherit;
+  border: 1px solid #eee;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.action-controls .create-room:hover {
+  border-color: #ddd;
+}
 
 /*
   Car Panel
@@ -118,4 +141,45 @@ body {
 
 .dm {
   background-color: #fff2f2;
+}
+
+.create-room-modal {
+  position: fixed;
+  background-color: rgba(0,0,0,.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.create-room-wrapper {
+  width: 500px;
+  height: 120px;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.create-room-wrapper h2 {
+  font-weight: 300;
+  text-align: center;
+  padding: 10px;
+}
+
+.create-room-wrapper h2 span {
+  display: none;
+}
+
+.create-room-wrapper h2:hover span {
+  display: inline-block;
+}
+
+.create-room-wrapper input[type=text] {
+  padding: 10px;
+  width: 90%;
+  display: block;
+  margin: auto;
+  margin-top: 10px;
 }

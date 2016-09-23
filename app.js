@@ -1,6 +1,7 @@
 var App = function() {
   function init() {
     typeEngine();
+    createRoom();
   }
   
   //Privates
@@ -53,6 +54,36 @@ var App = function() {
       } else {
         errCounter++;
         userInputElmWrapper.removeClass('m').addClass('dm');
+      }
+    });
+  }
+  
+  function createRoom() {
+    $('#create-room').on('click', function() {
+      $('.create-room-modal').removeClass('hide');
+    });
+    
+    $('.create-room-wrapper').find('input[type=text]').on('keydown', function(e) {
+      if(e.which == 13) {
+        var getVal = $(this).val().trim();
+        if(getVal == '') {
+          return;
+        }
+        
+        $.ajax({
+          url: '/your-path',
+          type: 'post',
+          dataType: 'json',
+          data: {
+            room_name: $(this).val().trim()
+          },
+          success: function(res) {
+            $('.create-room-modal').addClass('hide');
+          },
+          error: function() {
+            
+          }
+        });
       }
     });
   }
