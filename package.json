@@ -1,0 +1,22 @@
+{
+  "name": "racex",
+  "version": "1.0.0",
+  "description": "WebRTC powered Racing game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/i-break-codes/racex.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/i-break-codes/racex/issues"
+  },
+  "homepage": "https://github.com/i-break-codes/racex#readme",
+  "dependencies": {
+    "redis": "^2.6.2"
+  }
+}
