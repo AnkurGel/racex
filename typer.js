@@ -25,17 +25,18 @@ var Typer = {
   },
 
   sendKey: function(data){
+    console.log('data is', data);
     Typer.typedEntries += data.length;
     Typer.errors += data.errors;
   },
 
   calculateSpeed: function(){
-    time = 0.005 + (Typer.counter * 0.005);
+    time = 0.05 + (Typer.counter * 0.05);
     console.log("time", time);
     Typer.grossWPM = (Typer.typedEntries / 5 ) / time;//3 seconds
     Typer.netWPM = Typer.grossWPM - ((Typer.errors/5) / time);//3 seconds
     Typer.accuracy = (Typer.netWPM / Typer.grossWPM) * 100;
-    console.log(Typer.netWPM, Typer.accuracy);
+    console.log(Typer.grossWPM, Typer.netWPM, Typer.accuracy);
   }
 }
 Typer.init();
