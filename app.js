@@ -14,6 +14,8 @@ var App = function() {
     var getPara = $('#sample-text').text().trim();
     var splitPara = getPara.split('');
     
+    var errCounter = 0;
+    
     userInputElm.on('input', function () {
       var userInput = $(this).val();
       var explodeUserInput = userInput.split('');
@@ -26,13 +28,26 @@ var App = function() {
         if($(this).parent().hasClass('dm')) {
           return;
         }
+        
+        console.log(errCounter);
+        console.log($(this).val().length);
+        console.log($(this).val());
+        var data = {
+          errCount: errCounter,
+          word: $(this).val(),
+          wordLength: $(this).val()
+        }
+        
+        
         lastIdxPosSuccess = (lastIdxPosSuccess + currentIdx + 1);
+        errCounter = 0; //reset errors
         $(this).val('');
       }
       
       if(currentChar == splitPara[(currentIdx + lastIdxPosSuccess)]) {
         userInputElmWrapper.removeClass('dm').addClass('m');
       } else {
+        errCounter++;
         userInputElmWrapper.removeClass('m').addClass('dm');
       }
     });
