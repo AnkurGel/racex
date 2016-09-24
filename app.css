@@ -87,6 +87,10 @@ body {
   top: 0;
 }
 
+.car {
+  transition: left 300ms linear;
+}
+
 .car[data-user-id="1"],
 .car[data-user-id="2"],
 .car[data-user-id="3"],

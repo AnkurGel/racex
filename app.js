@@ -30,7 +30,11 @@ var App = function() {
       if(splitPara[(lastIdxPosSuccess + currentIdx)] == ' ') {
         if($(this).parent().hasClass('dm')) {
           return;
+        } else if($(this).val() != (getPara.substring(lastIdxPosSuccess, (lastIdxPosSuccess + currentIdx)) + ' ')) {
+          userInputElmWrapper.removeClass('m').addClass('dm');
+          return;
         }
+        
         
         var completedText = getPara.substring(0, (lastIdxPosSuccess + currentIdx));
         var incompleteText = getPara.substring((lastIdxPosSuccess + currentIdx), $('#sample-text').text().trim().length);
