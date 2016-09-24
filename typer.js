@@ -8,11 +8,14 @@ var Typer = {
 
   init: function(){
     Typer.resetDefaults();
-    setInterval(function(){ 
-      console.log("Got into setInterval");
+    calculate = setInterval(function(){ 
       Typer.counter += 1;
       Typer.calculateSpeed();
     }, 300);
+
+    pushDataInterval = setInterval(function(){ 
+      Typer.pushData();
+    }, 350);
   },
 
   resetDefaults: function(){
@@ -25,18 +28,22 @@ var Typer = {
   },
 
   sendKey: function(data){
-    console.log('data is', data);
     Typer.typedEntries += data.length;
     Typer.errors += data.errors;
+    App.advanceGaddi(data)
   },
 
   calculateSpeed: function(){
-    time = 0.05 + (Typer.counter * 0.05);
-    console.log("time", time);
-    Typer.grossWPM = (Typer.typedEntries / 5 ) / time;//3 seconds
-    Typer.netWPM = Typer.grossWPM - ((Typer.errors/5) / time);//3 seconds
+    time = 0.005 + (Typer.counter * 0.005);//3 seconds
+    Typer.grossWPM = (Typer.typedEntries / 5 ) / time;
+    Typer.netWPM = Typer.grossWPM - ((Typer.errors/5) / time);
     Typer.accuracy = (Typer.netWPM / Typer.grossWPM) * 100;
-    console.log(Typer.grossWPM, Typer.netWPM, Typer.accuracy);
+    // console.log(Typer.grossWPM, Typer.netWPM, Typer.accuracy);
+  },
+
+  pushData: function(){
+    var data = {id: 1, speed: Math.round(Typer.netWPM)};
+    App.updateSpeed(data);
   }
 }
 Typer.init();

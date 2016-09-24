@@ -8,8 +8,10 @@ var App = function() {
 
   function init() {
     createWebSocketConnection();
+    App.stepFunction = 'word';
     typeEngine();
     Typer.init();
+    createRoom();
   }
   
   //Privates
@@ -36,7 +38,11 @@ var App = function() {
       if(splitPara[(lastIdxPosSuccess + currentIdx)] == ' ') {
         if($(this).parent().hasClass('dm')) {
           return;
+        } else if($(this).val() != (getPara.substring(lastIdxPosSuccess, (lastIdxPosSuccess + currentIdx)) + ' ')) {
+          userInputElmWrapper.removeClass('m').addClass('dm');
+          return;
         }
+        
         
         var completedText = getPara.substring(0, (lastIdxPosSuccess + currentIdx));
         var incompleteText = getPara.substring((lastIdxPosSuccess + currentIdx), $('#sample-text').text().trim().length);
@@ -58,6 +64,9 @@ var App = function() {
       
       if(currentChar == splitPara[(currentIdx + lastIdxPosSuccess)]) {
         userInputElmWrapper.removeClass('dm').addClass('m');
+        if(App.stepFunction == 'char'){
+          
+        }
       } else {
         errCounter++;
         userInputElmWrapper.removeClass('m').addClass('dm');
@@ -212,10 +221,57 @@ var App = function() {
   function setRacerCount(racerCount) {
     racerCount = racerCount;
   }
+
+  function updateSpeed(data){
+    $('.speed[data-user-id="'+data['id']+'"]').text(data['speed'] + ' WPM');
+  }
+
+  function createRoom() {
+    $('#create-room').on('click', function() {
+      $('.create-room-modal').removeClass('hide');
+    });
+    
+    $('.create-room-wrapper').find('input[type=text]').on('keydown', function(e) {
+      if(e.which == 13) {
+        var getVal = $(this).val().trim();
+        if(getVal == '') {
+          return;
+        }
+        
+        $.ajax({
+          url: '/your-path',
+          type: 'post',
+          dataType: 'json',
+          data: {
+            room_name: $(this).val().trim()
+          },
+          success: function(res) {
+            $('.create-room-modal').addClass('hide');
+          },
+          error: function() {
+            
+          }
+        });
+      }
+    });
+  }
+
+  function advanceGaddi(data) {
+    //shitty stuff
+    var advanceUnit = (950 * data['length'] * 0.4 )/ $('#sample-text').text().trim().length;
+    var track = 0;
+    
+    var left = $('.car[data-user-id=1]').css('left');
+    $('.car[data-user-id=1]').css('left', (parseInt(left) + advanceUnit));
+  }
+
   return {
     init: init,
-    setUserName: setUserName
+    setUserName: setUserName,
+    updateSpeed: updateSpeed,
+    advanceGaddi: advanceGaddi
   }
+  
 }();
 
 App.init();

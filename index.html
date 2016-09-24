@@ -14,33 +14,48 @@
         Race<span>X</span>
       </div>
       
+      <div class="action-controls">
+        <button id="create-room" class="create-room">Create Room</button>
+      </div>
+      
       <div class="race-window">
         <div class="track">
-          <div class="car" data-user-id="1"></div>
+          <div class="car" data-user-id="1" style="left: 0;"></div>
+          <div class="speed" data-user-id="1">0 WPM</div>
         </div>
         
         <div class="track">
-          <div class="car" data-user-id="2"></div>
+          <div class="car" data-user-id="2" style="left: 0;"></div>
+          <div class="speed" data-user-id="2">0 WPM</div>
         </div>
         
         <div class="track">
-          <div class="car" data-user-id="3"></div>
+          <div class="car" data-user-id="3" style="left: 0;"></div>
+          <div class="speed" data-user-id="3">0 WPM</div>
         </div>
         
         <div class="track">
-          <div class="car" data-user-id="4"></div>
+          <div class="car" data-user-id="4" style="left: 0;"></div>
+          <div class="speed" data-user-id="4">0 WPM</div>
         </div>
       </div>
       
-      <div class="sample-text" id="sample-text">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim fuga, eius laboriosam ullam a ipsam eaque dolore 
-        delectus animi quis voluptate recusandae laudantium impedit ipsum, aliquam iste maiores veniam vitae.
-      </div>
+      <div class="sample-text" id="sample-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim fuga, eius laboriosam ullam a ipsam eaque dolore 
+        delectus animi quis voluptate recusandae laudantium impedit ipsum, aliquam iste maiores veniam vitae.</div>
       
       <div class="user-input" id="user-input">
         <input type="text" autofocus>
       </div>
 
+    </div>
+    
+    <div class="create-room-modal hide">
+      <div class="create-room-wrapper">
+        <h2>Create a room <span title="You managed to find a lame easter egg :p">Bitches</span> :)</h2>
+        <form method="post">
+          <input type="text" name="room_name" placeholder="Type in your room name and press enter">
+        </form>
+      </div>
     </div>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
