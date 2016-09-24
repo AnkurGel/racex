@@ -4,6 +4,7 @@ var App = function() {
     typeEngine();
     Typer.init();
     createRoom();
+    advanceGaddi();
   }
   
   //Privates
@@ -95,6 +96,15 @@ var App = function() {
         });
       }
     });
+  }
+  
+  function advanceGaddi() {
+    //shitty stuff
+    var advanceUnit = 950 / $('#sample-text').text().trim().length;
+    var track = 0;
+    
+    var left = $('.car[data-user-id=1]').css('left');
+    $('.car[data-user-id=1]').css('left', (parseInt(left) + advanceUnit));
   }
   
   return {
