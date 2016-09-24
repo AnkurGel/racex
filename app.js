@@ -9,6 +9,7 @@ var App = function() {
   function init() {
     createWebSocketConnection();
     typeEngine();
+    Typer.init();
   }
   
   //Privates
@@ -22,6 +23,8 @@ var App = function() {
     var getPara = $('#sample-text').text().trim();
     var splitPara = getPara.split('');
     
+    var errCounter = 0;
+    
     userInputElm.on('input', function () {
       var userInput = $(this).val();
       var explodeUserInput = userInput.split('');
@@ -34,13 +37,29 @@ var App = function() {
         if($(this).parent().hasClass('dm')) {
           return;
         }
+        
+        var completedText = getPara.substring(0, (lastIdxPosSuccess + currentIdx));
+        var incompleteText = getPara.substring((lastIdxPosSuccess + currentIdx), $('#sample-text').text().trim().length);
+        
+        $('#sample-text').html('<span>' + completedText + '</span>' + incompleteText);
+        // console.log(errCounter);
+        // console.log($(this).val().length);
+        // console.log($(this).val());
+        var data = {
+          errors: errCounter,
+          length: $(this).val().length
+        }
+        
+        Typer.sendKey(data);
         lastIdxPosSuccess = (lastIdxPosSuccess + currentIdx + 1);
+        errCounter = 0; //reset errors
         $(this).val('');
       }
       
       if(currentChar == splitPara[(currentIdx + lastIdxPosSuccess)]) {
         userInputElmWrapper.removeClass('dm').addClass('m');
       } else {
+        errCounter++;
         userInputElmWrapper.removeClass('m').addClass('dm');
       }
     });
