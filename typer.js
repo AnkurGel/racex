@@ -30,6 +30,7 @@ var Typer = {
   sendKey: function(data){
     Typer.typedEntries += data.length;
     Typer.errors += data.errors;
+    App.advanceGaddi(data)
   },
 
   calculateSpeed: function(){
