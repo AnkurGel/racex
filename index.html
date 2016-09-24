@@ -14,6 +14,10 @@
         Race<span>X</span>
       </div>
       
+      <div class="action-controls">
+        <button id="create-room" class="create-room">Create Room</button>
+      </div>
+      
       <div class="race-window">
         <div class="track">
           <div class="car" data-user-id="1"></div>
@@ -45,6 +49,15 @@
         <input type="text" autofocus>
       </div>
 
+    </div>
+    
+    <div class="create-room-modal hide">
+      <div class="create-room-wrapper">
+        <h2>Create a room <span title="You managed to find a lame easter egg :p">Bitches</span> :)</h2>
+        <form method="post">
+          <input type="text" name="room_name" placeholder="Type in your room name and press enter">
+        </form>
+      </div>
     </div>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
