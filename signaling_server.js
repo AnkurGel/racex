@@ -22,6 +22,7 @@ var wsEvents = {
     },
 
     send: (msg, connection) => {
+        console.log("Sending", msg);
         connection.send(JSON.stringify(msg));
     },
 
@@ -37,6 +38,9 @@ var handleMessage = (data, connection) => {
     switch(data.type) {
         case 'login':
             registerRacer(data.name, data.room, connection);
+            break;
+        case 'webrtcReady':
+            webrtcReady(data, connection);
             break;
         case 'offer':
             prepareOffer(data, connection);
@@ -65,19 +69,54 @@ function registerRacer(name, room, connection) {
         // allot ws connection to racer
         if(!racers[room]) racers[room] = {};
         connection.name = name;
-        racers[room][name] = connection;
+        if(!racers[room][name]) racers[room][name] = {};
+        racers[room][name]['connection'] = connection;
+        racers[room][name]['rtcReady'] = false;
         wsEvents.send({
             type: 'login', 
             success: true,
             name: name,
             racers: Object.keys(racers[room])
         }, connection);
+        // 2 is racers count. Change it later
+        if(Object.keys(racers[room]).length == 2) {
+            // Now, all racers are registered, inform them to about their peers
+            Object.keys(racers[room]).forEach(function(racer) {
+                wsEvents.send({
+                    type: 'peers',
+                    racers: Object.keys(racers[room])
+                }, racers[room][racer]['connection']);
+            });
+        }
     }
+}
+
+function webrtcReady(data, connection) {
+    // This registers that racer has initiated his RTC and is ready to send offers
+    racers[data.room][data.name]['rtcReady'] = true;
+    if(allRacersReady(data.room)) {
+        askForOffers(data.room);
+    }
+}
+
+function allRacersReady(room) {
+    return Object.keys(racers[room]).reduce(function(val, racer) {
+        return val && racers[room][racer].rtcReady;
+    }, true);
+}
+
+function askForOffers(room) {
+    Object.keys(racers[room]).forEach(function(racer) {
+        wsEvents.send({
+            type: 'readyForOffer',
+            racers: Object.keys(racers[room])
+        }, racers[room][racer].connection);
+    });
 }
 
 function prepareOffer(data, connection) {
     console.log("Sending offer to:", data.name);
-    var conn = racers[data.room] && racers[data.room][data.name];
+    var conn = racers[data.room] && racers[data.room][data.name]['connection'];
     if(conn != null) {
         connection.otherRacer = data.name;
         wsEvents.send({
@@ -90,7 +129,7 @@ function prepareOffer(data, connection) {
 
 function prepareAnswer(data, connection) {
     console.log("Sending answer to", data.name);
-    var conn = racers[data.room] && racers[data.room][data.name];
+    var conn = racers[data.room] && racers[data.room][data.name]['connection'];
     if(conn != null) {
         wsEvents.send({
             type: 'answer',
@@ -110,12 +149,12 @@ function getPeers(data, connection) {
 
 function prepareCandidate(data, connection) {
     console.log("Sending candidate to", data.name);
-    var conn = racers[data.room] && racers[data.room][data.name];
+    var conn = racers[data.room] && racers[data.room][data.name]['connection'];
     if(conn != null) {
         wsEvents.send({
             type: 'candidate',
             candidate: data.candidate,
-            name: data.name
+            name: connection.name
         }, conn);
     }
 }

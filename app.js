@@ -75,7 +75,7 @@ var App = function() {
   }
 
   function createWebSocketConnection() {
-    ws = new WebSocket('ws://10.100.101.131:9999');
+    ws = new WebSocket('ws://localhost:9999');
     ws.onopen = function(message) {
       console.log("Successfully connected to signaling server");
     };
@@ -93,6 +93,12 @@ var App = function() {
         case 'login':
               onLogin(data);
               break;
+        case 'peers':
+              onPeer(data);
+              break;
+        case 'readyForOffer':
+              readyForOffer(data);
+              break;
         case 'offer':
               onOffer(data);
               break;
@@ -101,8 +107,6 @@ var App = function() {
               break;
         case 'candidate':
               onCandidate(data);
-        case 'peers':
-              onPeer(data);
               break;
       }
     };
@@ -112,7 +116,7 @@ var App = function() {
     if(data.success === false){ alert("Try a different username..."); }
     else {
       username = data.name;
-      startPeerDiscovery();
+    //  startPeerDiscovery();
     }
   }
 
@@ -124,12 +128,12 @@ var App = function() {
 
       racerConnection.createAnswer(function(answer) {
         racerConnection.setLocalDescription(answer);
-        ws.send(JSON.stringify({
-          type: 'answer', 
+        send({
+          type: 'answer',
           answer: answer,
-          name: otherRacer, 
-          room: 'browserstack'})
-        );
+          name: otherRacer,
+          room: 'browserstack'
+        });
       });
 
     }
@@ -139,28 +143,41 @@ var App = function() {
   }
 
   function onCandidate(data) {
-
+    rtcPeerConnections[data.name].addIceCandidate(new RTCIceCandidate(data.candidate));
   }
 
   function setUserName(name) {
     // Sets user name and sends it on signaling server
-    ws.send(JSON.stringify({type: 'login', name: name, room: 'browserstack'}))
+
+    send({
+      type: 'login',
+      name: name,
+      room: 'browserstack'
+    });
   }
 
   function startPeerDiscovery() {
     peerDiscovery = setInterval(function() {
-      ws.send(JSON.stringify({room: 'browserstack', type: 'getPeers'}));
+      send({
+        room: 'browserstack',
+        type: 'getPeers'
+      });
     }, 1000);
   }
 
   function onPeer(data) {
     if(data.racers.length > 1) {
-      if(data.racers.length == racerCount) clearInterval(peerDiscovery);
+      //if(data.racers.length == racerCount) clearInterval(peerDiscovery);
       data.racers.splice(data.racers.indexOf(username), 1);
       data.racers.forEach(function(otherRacer) {
         // initiate webrtc
         webrtcInit(otherRacer)
       });
+      send({
+        type: 'webrtcReady',
+        room: 'browserstack',
+        name: username
+      })
     }
   }
 
@@ -170,8 +187,9 @@ var App = function() {
     };
 
     if(!rtcPeerConnections[otherRacer]) {
+      console.log("Creating rtcPeerConnection for", otherRacer);
       rtcPeerConnections[otherRacer] = new webkitRTCPeerConnection(configuration);
-      var racerConnection = rtcPeerConnections[otherRacer]
+      var racerConnection = rtcPeerConnections[otherRacer];
 
       dataChannels[otherRacer] = racerConnection.createDataChannel(otherRacer);
       var racerDataConnection = dataChannels[otherRacer];
@@ -193,29 +211,37 @@ var App = function() {
 
       console.log("webkitRTCPeerConnection object created with", otherRacer);
       racerConnection.onicecandidate = function(event) {
+        console.log("I'm sending ice candidate now");
         if(event.candidate) {
-          ws.send(JSON.stringify({
+          send({
             type: 'candidate',
             room: 'browserstack',
             candidate: event.candidate,
             name: otherRacer
-          }));
+          });
         }
       };
-      
+    }
+    
+  }
+
+  function readyForOffer(data) {
+    data.racers.splice(data.racers.indexOf(username), 1);
+    data.racers.forEach(function(otherRacer) {
+      var racerConnection = rtcPeerConnections[otherRacer];
       racerConnection.createOffer(function(offer) {
+        racerConnection.setLocalDescription(offer);
         console.log("Sending offer for ", otherRacer);
-        ws.send(JSON.stringify({
+        send({
           type: 'offer',
           room: 'browserstack',
           offer: offer,
           name: otherRacer
-        }));
+        });
       }, function(err) {
         alert("offer nahi bana");
       });
-    }
-    
+    });
   }
 
   function setRacerCount(racerCount) {
@@ -263,6 +289,11 @@ var App = function() {
     
     var left = $('.car[data-user-id=1]').css('left');
     $('.car[data-user-id=1]').css('left', (parseInt(left) + advanceUnit));
+  }
+
+  function send(message) {
+    console.log("Sending message:", JSON.stringify(message));
+    ws.send(JSON.stringify(message));
   }
 
   return {
