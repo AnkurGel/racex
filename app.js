@@ -134,7 +134,7 @@ var App = function() {
           name: otherRacer,
           room: 'browserstack'
         });
-      });
+      }, function() {  });
 
     }
   }
@@ -188,24 +188,12 @@ var App = function() {
 
     if(!rtcPeerConnections[otherRacer]) {
       console.log("Creating rtcPeerConnection for", otherRacer);
-      rtcPeerConnections[otherRacer] = new webkitRTCPeerConnection(configuration);
+      rtcPeerConnections[otherRacer] = new webkitRTCPeerConnection(configuration, { optional: [{RTPDataChannels: true}] });
       var racerConnection = rtcPeerConnections[otherRacer];
 
-      dataChannels[otherRacer] = racerConnection.createDataChannel(otherRacer);
-      var racerDataConnection = dataChannels[otherRacer];
 
-      racerDataConnection.onerror = function(error) {
-        console.log("Data channel error:", error);
-      };
-      racerDataConnection.onmessage = function(event) {
-
-      };
-      racerDataConnection.onopen = function () {
-        racerDataConnection.send("Hello World!");
-      };
-
-      racerDataConnection.onclose = function () {
-        console.log("The Data Channel is Closed");
+      racerConnection.ondatachannel = function(event) {
+        handleDataChannel(event.channel);
       };
 
 
@@ -221,6 +209,8 @@ var App = function() {
           });
         }
       };
+      //var dataChannel = racerConnection.createDataChannel('myDataChannel', {reliable: true});
+
     }
     
   }
@@ -229,6 +219,7 @@ var App = function() {
     data.racers.splice(data.racers.indexOf(username), 1);
     data.racers.forEach(function(otherRacer) {
       var racerConnection = rtcPeerConnections[otherRacer];
+      createDataChannel(racerConnection, otherRacer);
       racerConnection.createOffer(function(offer) {
         racerConnection.setLocalDescription(offer);
         console.log("Sending offer for ", otherRacer);
@@ -291,6 +282,27 @@ var App = function() {
     $('.car[data-user-id=1]').css('left', (parseInt(left) + advanceUnit));
   }
 
+  function createDataChannel(racerConnection, otherRacer) {
+    dataChannels[otherRacer] = racerConnection.createDataChannel('browserstack', {reliable: true});
+    handleDataChannel(dataChannels[otherRacer]);
+  }
+
+  function handleDataChannel(channel) {
+    channel.onopen = function() {
+      console.log("HELLO");
+    };
+    channel.onclose = function() {
+      console.log("Screw you guys, I'm going home");
+    };
+    channel.onmessage = function(event) {
+      console.log("Data Channel received:", event);
+    };
+    channel.onerror = function(error) {
+      console.log("Data channel error:", error);
+    };
+
+  }
+
   function send(message) {
     console.log("Sending message:", JSON.stringify(message));
     ws.send(JSON.stringify(message));
@@ -300,6 +312,7 @@ var App = function() {
     init: init,
     setUserName: setUserName,
     updateSpeed: updateSpeed,
+    dataChannels: dataChannels,
     advanceGaddi: advanceGaddi
   }
   

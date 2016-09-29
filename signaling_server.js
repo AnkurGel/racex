@@ -7,7 +7,7 @@ var wss = new WebSocketServer({
 
 var redisClient = redis.createClient();
 
-var racers = {};
+var racers = {}, rooms = {};
 var wsEvents = {
     onmessage: (msg, connection) => {
         console.log("Got message", msg);
@@ -106,12 +106,10 @@ function allRacersReady(room) {
 }
 
 function askForOffers(room) {
-    Object.keys(racers[room]).forEach(function(racer) {
-        wsEvents.send({
-            type: 'readyForOffer',
-            racers: Object.keys(racers[room])
-        }, racers[room][racer].connection);
-    });
+    wsEvents.send({
+        type: 'readyForOffer',
+        racers: Object.keys(racers[room])
+    }, racers[room][Object.keys(racers[room])[0]].connection);
 }
 
 function prepareOffer(data, connection) {
@@ -133,7 +131,8 @@ function prepareAnswer(data, connection) {
     if(conn != null) {
         wsEvents.send({
             type: 'answer',
-            answer: data.answer
+            answer: data.answer,
+            name: connection.name
         }, conn);
     }
 }
