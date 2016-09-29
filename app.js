@@ -193,6 +193,7 @@ var App = function() {
 
 
       racerConnection.ondatachannel = function(event) {
+        dataChannels[otherRacer] = event.channel;
         handleDataChannel(event.channel);
       };
 
