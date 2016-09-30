@@ -109,6 +109,9 @@ var App = function() {
         case 'candidate':
               onCandidate(data);
               break;
+        case 'otherRacerLeft':
+              otherRacerLeft(data);
+              break;
       }
     };
   }
@@ -237,6 +240,12 @@ var App = function() {
     });
   }
 
+  function otherRacerLeft(data) {
+    // remove racerConnection for that racer if present,
+    delete rtcPeerConnections[data.name];
+    // remove his gaadi from UI, decrease racerCount by 1
+    racerCount -= 1;
+  }
   function setRoom(name, count) {
     roomName = name;
     racerCount = count;
