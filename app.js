@@ -3,6 +3,7 @@ var App = function() {
       rtcPeerConnections = {},
       dataChannels = {},
       username,
+      roomName = 'browserstack',
       racerCount = 2,
       peerDiscovery;
 
@@ -132,7 +133,7 @@ var App = function() {
           type: 'answer',
           answer: answer,
           name: otherRacer,
-          room: 'browserstack'
+          room: roomName
         });
       }, function() {  });
 
@@ -152,14 +153,14 @@ var App = function() {
     send({
       type: 'login',
       name: name,
-      room: 'browserstack'
+      room: roomName
     });
   }
 
   function startPeerDiscovery() {
     peerDiscovery = setInterval(function() {
       send({
-        room: 'browserstack',
+        room: roomName,
         type: 'getPeers'
       });
     }, 1000);
@@ -175,7 +176,7 @@ var App = function() {
       });
       send({
         type: 'webrtcReady',
-        room: 'browserstack',
+        room: roomName,
         name: username
       })
     }
@@ -204,7 +205,7 @@ var App = function() {
         if(event.candidate) {
           send({
             type: 'candidate',
-            room: 'browserstack',
+            room: roomName,
             candidate: event.candidate,
             name: otherRacer
           });
@@ -217,7 +218,7 @@ var App = function() {
   }
 
   function readyForOffer(data) {
-    data.racers.splice(data.racers.indexOf(username), 1);
+    // data.racers.splice(data.racers.indexOf(username), 1);
     data.racers.forEach(function(otherRacer) {
       var racerConnection = rtcPeerConnections[otherRacer];
       createDataChannel(racerConnection, otherRacer);
@@ -226,7 +227,7 @@ var App = function() {
         console.log("Sending offer for ", otherRacer);
         send({
           type: 'offer',
-          room: 'browserstack',
+          room: roomName,
           offer: offer,
           name: otherRacer
         });
@@ -236,8 +237,14 @@ var App = function() {
     });
   }
 
-  function setRacerCount(racerCount) {
-    racerCount = racerCount;
+  function setRoom(name, count) {
+    roomName = name;
+    racerCount = count;
+    send({
+      type: 'registerRoom',
+      room: roomName,
+      racerCount: racerCount
+    })
   }
 
   function updateSpeed(data){
@@ -284,7 +291,7 @@ var App = function() {
   }
 
   function createDataChannel(racerConnection, otherRacer) {
-    dataChannels[otherRacer] = racerConnection.createDataChannel('browserstack', {reliable: true});
+    dataChannels[otherRacer] = racerConnection.createDataChannel(roomName, {reliable: true});
     handleDataChannel(dataChannels[otherRacer]);
   }
 
@@ -313,6 +320,7 @@ var App = function() {
     init: init,
     setUserName: setUserName,
     updateSpeed: updateSpeed,
+    setRoom: setRoom,
     dataChannels: dataChannels,
     advanceGaddi: advanceGaddi
   }

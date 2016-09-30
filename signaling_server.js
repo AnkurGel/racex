@@ -36,6 +36,9 @@ var wsEvents = {
 
 var handleMessage = (data, connection) => {
     switch(data.type) {
+        case 'registerRoom':
+            registerRoom(data.room, data.racerCount);
+            break;
         case 'login':
             registerRacer(data.name, data.room, connection);
             break;
@@ -62,6 +65,10 @@ var handleMessage = (data, connection) => {
     }
 };
 
+function registerRoom(roomName, racerCount) {
+    rooms[roomName] = +racerCount;
+}
+
 function registerRacer(name, room, connection) {
     if(racers[room] && racers[room][name]){
         wsEvents.send({type: 'login', success: false}, connection);
@@ -79,7 +86,7 @@ function registerRacer(name, room, connection) {
             racers: Object.keys(racers[room])
         }, connection);
         // 2 is racers count. Change it later
-        if(Object.keys(racers[room]).length == 2) {
+        if(Object.keys(racers[room]).length == rooms[room]) {
             // Now, all racers are registered, inform them to about their peers
             Object.keys(racers[room]).forEach(function(racer) {
                 wsEvents.send({
@@ -106,10 +113,22 @@ function allRacersReady(room) {
 }
 
 function askForOffers(room) {
-    wsEvents.send({
-        type: 'readyForOffer',
-        racers: Object.keys(racers[room])
-    }, racers[room][Object.keys(racers[room])[0]].connection);
+
+    var racersInRoom = Object.keys(racers[room]);
+    var mesh = racersInRoom.reduce(function(arr, racer) {
+        var connection = racers[room][racer].connection;
+        arr.push([connection, racersInRoom.slice(racersInRoom.indexOf(racer) + 1, racersInRoom.length)]);
+        return arr;
+    }, []);
+
+    mesh.pop();
+
+    mesh.forEach(function(network){
+        wsEvents.send({
+            type: 'readyForOffer',
+            racers: network[1]
+        }, network[0]);
+    });
 }
 
 function prepareOffer(data, connection) {
