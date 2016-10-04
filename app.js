@@ -5,7 +5,7 @@ var App = function() {
       username,
       roomName = 'browserstack',
       racerCount = 2,
-      peerDiscovery;
+      peerDiscovery, roomDefer;
 
   function init() {
     createWebSocketConnection();
@@ -91,6 +91,9 @@ var App = function() {
       var data = JSON.parse(message); // data received from signaling server
 
       switch(data.type) {
+        case 'roomRegistered':
+              onRoomRegistered(data);
+              break;
         case 'login':
               onLogin(data);
               break;
@@ -114,6 +117,16 @@ var App = function() {
               break;
       }
     };
+  }
+
+  function onRoomRegistered(data) {
+    if(roomDefer) {
+      if(data.success) {
+        roomDefer.resolve();
+      }  else {
+        roomDefer.reject();
+      }
+    }
   }
 
   function onLogin(data) {
@@ -255,7 +268,11 @@ var App = function() {
         return;
       }
       
-      setRoom(getRoomName, memberCount);
+      setRoom(getRoomName, memberCount).then(function() {
+        window.location = 'room/' + getRoomName;
+      }, function() {
+        alert("Room is already registered.")
+      });
     });
   }
 
@@ -268,11 +285,13 @@ var App = function() {
   function setRoom(name, count) {
     roomName = name;
     racerCount = count;
+    roomDefer = Q.defer();
     send({
       type: 'registerRoom',
       room: roomName,
       racerCount: racerCount
-    })
+    });
+    return roomDefer.promise;
   }
 
   function updateSpeed(data){

@@ -44,7 +44,7 @@ var wsEvents = {
 var handleMessage = (data, connection) => {
     switch(data.type) {
         case 'registerRoom':
-            registerRoom(data.room, data.racerCount);
+            registerRoom(data.room, data.racerCount, connection);
             break;
         case 'login':
             registerRacer(data.name, data.room, connection);
@@ -72,8 +72,13 @@ var handleMessage = (data, connection) => {
     }
 };
 
-function registerRoom(roomName, racerCount) {
-    rooms[roomName] = +racerCount;
+function registerRoom(roomName, racerCount, connection) {
+    if(!rooms[roomName]) {
+        rooms[roomName] = +racerCount;
+        wsEvents.send({success: true, type: 'roomRegistered'}, connection);
+    } else {
+        wsEvents.send({success: false, type: 'roomRegistered'}, connection);
+    }
 }
 
 function registerRacer(name, room, connection) {
