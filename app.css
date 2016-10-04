@@ -167,7 +167,7 @@ body {
 
 .create-room-wrapper {
   width: 500px;
-  height: 120px;
+  height: 160px;
   background-color: #fff;
   position: absolute;
   top: 50%;
@@ -191,8 +191,32 @@ body {
 
 .create-room-wrapper input[type=text] {
   padding: 10px;
-  width: 90%;
   display: block;
-  margin: auto;
+  float: left;
+  margin-left: 10px;
   margin-top: 10px;
+}
+
+.create-room-wrapper input[type=text]:first-of-type {
+  width: 70%;
+}
+
+.create-room-wrapper input[type=text]:nth-child(2) {
+  width: 20%;
+}
+
+.create-room-wrapper input[type=submit] {
+  -webkit-appearance: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #515151;
+  background-color: transparent;
+  border: 1px solid #eee;
+  margin: 30px;
+  margin-top: 10px;
+  float: right;
+}
+
+.create-room-wrapper input[type=submit]:hover {
+  border-color: #515151;
 }

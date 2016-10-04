@@ -236,6 +236,25 @@ var App = function() {
       });
     });
   }
+  
+  function createRoom() {
+    $('#create-room').on('click', function() {
+      $('.create-room-modal').removeClass('hide');
+    });
+    
+    $('.create-room-wrapper').on('submit', function(e) {
+      e.preventDefault();
+      
+      var getRoomName = $(this).find('input[name=room_name]').val().trim();
+      var memberCount = $(this).find('input[name=member_count]').val().trim();
+      
+      if(getRoomName == '' || memberCount == '') {
+        return;
+      }
+      
+      setRoom(getRoomName, memberCount);
+    });
+  }
 
   function setRoom(name, count) {
     roomName = name;
@@ -249,36 +268,6 @@ var App = function() {
 
   function updateSpeed(data){
     $('.speed[data-user-id="'+data['id']+'"]').text(data['speed'] + ' WPM');
-  }
-
-  function createRoom() {
-    $('#create-room').on('click', function() {
-      $('.create-room-modal').removeClass('hide');
-    });
-    
-    $('.create-room-wrapper').find('input[type=text]').on('keydown', function(e) {
-      if(e.which == 13) {
-        var getVal = $(this).val().trim();
-        if(getVal == '') {
-          return;
-        }
-        
-        $.ajax({
-          url: '/your-path',
-          type: 'post',
-          dataType: 'json',
-          data: {
-            room_name: $(this).val().trim()
-          },
-          success: function(res) {
-            $('.create-room-modal').addClass('hide');
-          },
-          error: function() {
-            
-          }
-        });
-      }
-    });
   }
 
   function advanceGaddi(data) {
