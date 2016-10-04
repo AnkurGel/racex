@@ -82,8 +82,12 @@ function registerRoom(roomName, racerCount, connection) {
 }
 
 function registerRacer(name, room, connection) {
+    if(!rooms[room]) {
+        wsEvents.send({type: 'login', success: false, roomRegistered: false}, connection);
+        return;
+    }
     if(racers[room] && racers[room][name]){
-        wsEvents.send({type: 'login', success: false}, connection);
+        wsEvents.send({type: 'login', success: false, racersCount: racers[room], roomRegistered: true}, connection);
     } else {
         // allot ws connection to racer
         if(!racers[room]) racers[room] = {};
