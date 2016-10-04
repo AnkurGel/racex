@@ -187,7 +187,7 @@ var App = function() {
 
   function setUserName(name) {
     // Sets user name and sends it on signaling server
-
+    roomName = window.location.pathname.split('/')[2];
     send({
       type: 'login',
       name: name,
