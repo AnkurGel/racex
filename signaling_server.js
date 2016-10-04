@@ -100,7 +100,8 @@ function registerRacer(name, room, connection) {
             type: 'login', 
             success: true,
             name: name,
-            racers: Object.keys(racers[room])
+            racers: Object.keys(racers[room]),
+            roomRegistered: true
         }, connection);
         if(Object.keys(racers[room]).length == rooms[room]) {
             // Now, all racers are registered, inform them to about their peers
