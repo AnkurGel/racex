@@ -13,6 +13,24 @@ var App = function() {
     typeEngine();
     Typer.init();
     createRoom();
+    showUsernameModal();
+  }
+  
+  function showUsernameModal() {
+    if(window.location.href.indexOf('room') > -1) {
+      $('#create-room').addClass('hide');
+      $('#set-username').removeClass('hide');
+    }
+    
+    $('#set-username').on('click', function() {
+      $('.set-username-modal').removeClass('hide');
+    });
+    
+    $('.set-username-wrapper').on('submit', function(e) {
+      e.preventDefault();
+      var username = $(this).find('input[name=username]').val().trim();
+      
+    });
   }
   
   //Privates

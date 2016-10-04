@@ -46,7 +46,8 @@ body {
   top: 40px;
 }
 
-.action-controls .create-room {
+.action-controls .create-room,
+.action-controls .set-username {
   user-appearance: none;
   padding: 10px;
   font-family: inherit;
@@ -55,7 +56,8 @@ body {
   cursor: pointer;
 }
 
-.action-controls .create-room:hover {
+.action-controls .create-room:hover,
+.action-controls .set-username:hover {
   border-color: #ddd;
 }
 
@@ -156,7 +158,8 @@ body {
   background-color: #fff2f2;
 }
 
-.create-room-modal {
+.create-room-modal,
+.set-username-modal {
   position: fixed;
   background-color: rgba(0,0,0,.5);
   top: 0;
@@ -165,7 +168,8 @@ body {
   bottom: 0;
 }
 
-.create-room-wrapper {
+.create-room-wrapper,
+.set-username-wrapper {
   width: 500px;
   height: 160px;
   background-color: #fff;
@@ -175,7 +179,12 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.create-room-wrapper h2 {
+.set-username-wrapper {
+  height: 120px;
+}
+
+.create-room-wrapper h2,
+.set-username-wrapper h2 {
   font-weight: 300;
   text-align: center;
   padding: 10px;
@@ -189,7 +198,8 @@ body {
   display: inline-block;
 }
 
-.create-room-wrapper input[type=text] {
+.create-room-wrapper input[type=text],
+.set-username-wrapper input[type=text] {
   padding: 10px;
   display: block;
   float: left;
@@ -201,11 +211,16 @@ body {
   width: 70%;
 }
 
+.set-username-wrapper input[type=text]:first-of-type {
+  width: 75%;
+}
+
 .create-room-wrapper input[type=text]:nth-child(2) {
   width: 20%;
 }
 
-.create-room-wrapper input[type=submit] {
+.create-room-wrapper input[type=submit],
+.set-username-wrapper input[type=submit] {
   -webkit-appearance: none;
   padding: 10px 15px;
   cursor: pointer;
@@ -217,6 +232,7 @@ body {
   float: right;
 }
 
-.create-room-wrapper input[type=submit]:hover {
+.create-room-wrapper input[type=submit]:hover,
+.set-username-wrapper input[type=submit]:hover {
   border-color: #515151;
 }
