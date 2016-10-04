@@ -259,11 +259,12 @@ var App = function() {
   function setRoom(name, count) {
     roomName = name;
     racerCount = count;
+    
     send({
       type: 'registerRoom',
       room: roomName,
       racerCount: racerCount
-    })
+    });
   }
 
   function updateSpeed(data){
