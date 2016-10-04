@@ -130,10 +130,14 @@ var App = function() {
   }
 
   function onLogin(data) {
+    if(!data.roomRegistered) {
+      alert("This room is not registered. Register a new room");
+      window.location = '/'; return;
+    }
     if(data.success === false){ alert("Try a different username..."); }
     else {
       username = data.name;
-    //  startPeerDiscovery();
+      // @vaibhav: Add logic to populate cars with data.racersCount
     }
   }
 
