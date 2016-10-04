@@ -1,11 +1,8 @@
-var q = require('q');
-var redis = require('redis');
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({
     port: 9999
 });
 
-var redisClient = redis.createClient();
 
 var racers = {}, rooms = {};
 var wsEvents = {
@@ -29,7 +26,17 @@ var wsEvents = {
     onclose: (connection) => {
         if(connection.name) {
             console.log("Removing racer", connection.name);
-            delete racers[connection.name];
+            if(connection && connection.name && connection.room &&
+                racers[connection.room] && racers[connection.room][connection.name]) {
+                delete racers[connection.room][connection.name];
+                // Informing other racers that one of them betrayed'em and left
+                Object.keys(racers[connection.room]).forEach(function(racer) {
+                    wsEvents.send({
+                        type: 'otherRacerLeft',
+                        name: connection.name
+                    }, racers[connection.room][racer].connection);
+                });
+            }
         }
     }
 };
@@ -37,7 +44,7 @@ var wsEvents = {
 var handleMessage = (data, connection) => {
     switch(data.type) {
         case 'registerRoom':
-            registerRoom(data.room, data.racerCount);
+            registerRoom(data.room, data.racerCount, connection);
             break;
         case 'login':
             registerRacer(data.name, data.room, connection);
@@ -65,8 +72,13 @@ var handleMessage = (data, connection) => {
     }
 };
 
-function registerRoom(roomName, racerCount) {
-    rooms[roomName] = +racerCount;
+function registerRoom(roomName, racerCount, connection) {
+    if(!rooms[roomName]) {
+        rooms[roomName] = +racerCount;
+        wsEvents.send({success: true, type: 'roomRegistered'}, connection);
+    } else {
+        wsEvents.send({success: false, type: 'roomRegistered'}, connection);
+    }
 }
 
 function registerRacer(name, room, connection) {
@@ -76,6 +88,7 @@ function registerRacer(name, room, connection) {
         // allot ws connection to racer
         if(!racers[room]) racers[room] = {};
         connection.name = name;
+        connection.room = room;
         if(!racers[room][name]) racers[room][name] = {};
         racers[room][name]['connection'] = connection;
         racers[room][name]['rtcReady'] = false;
@@ -85,7 +98,6 @@ function registerRacer(name, room, connection) {
             name: name,
             racers: Object.keys(racers[room])
         }, connection);
-        // 2 is racers count. Change it later
         if(Object.keys(racers[room]).length == rooms[room]) {
             // Now, all racers are registered, inform them to about their peers
             Object.keys(racers[room]).forEach(function(racer) {
@@ -183,7 +195,6 @@ function leave(data, connection) {
 
 wss.on('connection', (connection) => {
    console.log("New connection");
-    //connection.send("hello");
 
     connection.otherRacers = [];
     connection.on('message', (msg) => {
