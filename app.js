@@ -20,6 +20,8 @@ var App = function() {
     if(window.location.href.indexOf('room') > -1) {
       $('#create-room').addClass('hide');
       $('#set-username').removeClass('hide');
+      
+      $('.after-room').removeClass('hide');
     }
     
     $('#set-username').on('click', function() {
@@ -30,6 +32,9 @@ var App = function() {
       e.preventDefault();
       var username = $(this).find('input[name=username]').val().trim();
       
+      setUserName(username);
+      
+      $('.set-username-modal').addClass('hide');
     });
   }
   
