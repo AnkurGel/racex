@@ -160,7 +160,17 @@ var App = function() {
     if(data.success === false){ alert("Try a different username..."); }
     else {
       username = data.name;
-      // @vaibhav: Add logic to populate cars with data.racersCount
+      
+      var addCar = `
+      <div class="track">
+        <div class="car" data-user-id="1" style="left: 0;"></div>
+        <div class="speed" data-user-id="1">0 WPM</div>
+      </div>`;
+
+      for(var i = 0, l = data.racersCount; i < l; i++) {
+        $('.race-window').append(addCar);
+      }
+      
     }
   }
 
