@@ -87,7 +87,7 @@ function registerRacer(name, room, connection) {
         return;
     }
     if(racers[room] && racers[room][name]){
-        wsEvents.send({type: 'login', success: false, racersCount: racers[room], roomRegistered: true}, connection);
+        wsEvents.send({type: 'login', success: false, racersCount: rooms[room], roomRegistered: true}, connection);
     } else {
         // allot ws connection to racer
         if(!racers[room]) racers[room] = {};
