@@ -101,6 +101,7 @@ function registerRacer(name, room, connection) {
             success: true,
             name: name,
             racers: Object.keys(racers[room]),
+            racersCount: rooms[room],
             roomRegistered: true
         }, connection);
         if(Object.keys(racers[room]).length == rooms[room]) {
