@@ -170,7 +170,7 @@ var App = function() {
       for(var i = 0, l = data.racersCount; i < l; i++) {
         $('.race-window').append(addCar);
       }
-      
+      $(".track .car").first().html(username);
     }
   }
 
@@ -179,7 +179,7 @@ var App = function() {
     var racerConnection = rtcPeerConnections[otherRacer];
     if(racerConnection) {
       racerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-
+      $("." + otherRacer).css('color', 'green');
       racerConnection.createAnswer(function(answer) {
         racerConnection.setLocalDescription(answer);
         send({
@@ -193,6 +193,7 @@ var App = function() {
     }
   }
   function onAnswer(data) {
+    $("." + data.name).css('color', 'green');
     rtcPeerConnections[data.name].setRemoteDescription(new RTCSessionDescription(data.answer))
   }
 
@@ -223,9 +224,10 @@ var App = function() {
     if(data.racers.length > 1) {
       //if(data.racers.length == racerCount) clearInterval(peerDiscovery);
       data.racers.splice(data.racers.indexOf(username), 1);
-      data.racers.forEach(function(otherRacer) {
+      data.racers.forEach(function(otherRacer, index) {
         // initiate webrtc
-        webrtcInit(otherRacer)
+        webrtcInit(otherRacer);
+        $(".track .car:not(:first)").eq(index).addClass(otherRacer).css('color', 'red').html(otherRacer);
       });
       send({
         type: 'webrtcReady',
