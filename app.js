@@ -160,15 +160,13 @@ var App = function() {
     if(data.success === false){ alert("Try a different username..."); }
     else {
       username = data.name;
-      
-      var addCar = `
-      <div class="track">
-        <div class="car" data-user-id="1" style="left: 0;"></div>
-        <div class="speed" data-user-id="1">0 WPM</div>
-      </div>`;
 
-      for(var i = 0, l = data.racersCount; i < l; i++) {
-        $('.race-window').append(addCar);
+      for(var i = 1; i <= data.racersCount; i++) {
+        $('.race-window').append(`
+        <div class="track">
+          <div class="car" data-user-id="` + i + `" style="left: 0;"></div>
+          <div class="speed" data-user-id="` + i + `">0 WPM</div>
+        </div>`);
       }
       
     }
@@ -208,6 +206,8 @@ var App = function() {
       name: name,
       room: roomName
     });
+    
+    $('#set-username').addClass('hide');
   }
 
   function startPeerDiscovery() {
