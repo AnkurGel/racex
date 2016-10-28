@@ -339,7 +339,7 @@ var App = function() {
 
   function advanceGaddi(data) {
     //shitty stuff
-    var advanceUnit = (950 * data['length'] * 0.4 )/ $('#sample-text').text().trim().length;
+    var advanceUnit = (950 * data['length']) / $('#sample-text').text().trim().length;
     var track = 0;
     
     for(var user in dataChannels) {
