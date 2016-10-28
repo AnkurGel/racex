@@ -348,7 +348,7 @@ var App = function() {
         progress: advanceUnit
       }
       
-      dataChannels[user].send(JSON.stringifY(userProgress));
+      dataChannels[user].send(JSON.stringify(userProgress));
     }
     
     var left = $('.car[data-user-id=1]').css('left');
@@ -368,12 +368,19 @@ var App = function() {
       console.log("Screw you guys, I'm going home");
     };
     channel.onmessage = function(event) {
-      console.log("Data Channel received:", event);
+      console.log("Data Channel received:", event.data);
+      handleDCMessage(JSON.parse(event.data));
     };
     channel.onerror = function(error) {
       console.log("Data channel error:", error);
     };
 
+  }
+
+  function handleDCMessage(msg) {
+    if(msg.hasOwnProperty('progress')) {
+      // Move the car of msg.username with msg.progress
+    }
   }
 
   function send(message) {
