@@ -342,6 +342,15 @@ var App = function() {
     var advanceUnit = (950 * data['length'] * 0.4 )/ $('#sample-text').text().trim().length;
     var track = 0;
     
+    for(var user in dataChannels) {
+      var userProgress = {
+        username: user,
+        progress: advanceUnit
+      }
+      
+      dataChannels[user].send(JSON.stringifY(userProgress));
+    }
+    
     var left = $('.car[data-user-id=1]').css('left');
     $('.car[data-user-id=1]').css('left', (parseInt(left) + advanceUnit));
   }
