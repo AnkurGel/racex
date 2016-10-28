@@ -344,7 +344,7 @@ var App = function() {
     
     for(var user in dataChannels) {
       var userProgress = {
-        username: user,
+        name: username,
         progress: advanceUnit
       }
       
@@ -380,6 +380,8 @@ var App = function() {
   function handleDCMessage(msg) {
     if(msg.hasOwnProperty('progress')) {
       // Move the car of msg.username with msg.progress
+      var left = $('.car:contains("' + msg.name + '")').css('left');
+      $('.car:contains("' + msg.name + '")').css('left', (parseInt(left) + msg.progress));
     }
   }
 
